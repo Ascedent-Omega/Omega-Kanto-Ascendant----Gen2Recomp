@@ -42,7 +42,6 @@ Kanto Ascendant (KASC) expands the Gen 1 adventure: more Pokémon to find, wild 
 - **Roxas2712 (Pandy)**: the original Kanto Ascendant and Voxel Ascendant.
 - **Omega Ascendant Team (Omega Dias)**: the continuation of both mods.
 - **Cedric / UNDERdecoded**: the Gen2Recomp engine.
-- **bryanthaboi and the Pokémon Gen 1 Recompilation Project contributors**: the original engine and mod API.
 - **Wilds of Kanto contributors**: the bundled Wilds 1.12.2 overworld Pokémon.
 - **pret** contributors: the pokered and pokecrystal disassemblies.
 
