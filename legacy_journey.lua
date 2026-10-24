@@ -9,8 +9,10 @@ return function(mod, opts)
   local storageScopeReady = false
   local storageBackendFailure
   local freshSeedFailure
-  local storageBackendMode = mod.storage
-    and type(mod.storage.edition) == "function" and "edition" or "playthrough"
+  local archiveStorage = opts.makeStorageCompat
+    and opts.makeStorageCompat(mod) or mod.storage
+  local storageBackendMode = archiveStorage
+    and type(archiveStorage.edition) == "function" and "edition" or "playthrough"
 
   -- Present the archive's transactional file-shaped interface on top of the
   -- official data-only storage API. Newer engines expose edition storage and
@@ -59,7 +61,7 @@ return function(mod, opts)
       local current = game()
       if not current then return nil, "no active playthrough" end
       if editionFacade then return editionFacade end
-      local facade, code, message = mod.storage:edition(current)
+      local facade, code, message = archiveStorage:edition(current)
       if type(facade) ~= "table" or type(facade.read) ~= "function"
           or type(facade.write) ~= "function"
           or type(facade.delete) ~= "function" then
@@ -3585,6 +3587,9 @@ return function(mod, opts)
 
   mod.hooks:wrap("save.new_game", function(nextNewGame, save)
     save = nextNewGame(save)
+    if archiveStorage and type(archiveStorage.beginFresh) == "function" then
+      assert(archiveStorage.beginFresh(save), "Legacy New Game namespace failed")
+    end
     bindArchiveData()
     if type(archive.markFreshOrigin) == "function" then
       archive.markFreshOrigin(save)
@@ -3649,7 +3654,9 @@ return function(mod, opts)
     if ev and ev.game then activeGame = ev.game end
   end, 5000)
 
-  mod.events:on("save.loading", function()
+  mod.events:on("save.loading", function(ev)
+    if archiveStorage and type(archiveStorage.adoptFresh) == "function"
+        and ev and ev.raw then archiveStorage.adoptFresh(ev.raw) end
     if archive.invalidateReadView then archive.invalidateReadView() end
   end, 9000)
 

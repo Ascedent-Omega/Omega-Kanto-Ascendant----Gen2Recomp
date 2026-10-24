@@ -371,6 +371,7 @@ return function(mod)
     equipmentRewards = loadSibling(mod, "equipment_rewards_67.lua"),
     i18n = i18n,
     makeArchive = loadSibling(mod, "legacy_archive.lua"),
+    makeStorageCompat = loadSibling(mod, "legacy_storage_compat.lua"),
     -- The Signals hub is constructed later, but the callback runs only after
     -- gameplay starts.  This keeps the HEVO unlock on the same real Oak-call
     -- presentation seam as Johto while retaining a TextBox fallback inside
