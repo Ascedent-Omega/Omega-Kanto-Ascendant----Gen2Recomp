@@ -6,9 +6,10 @@ return function(mod,Log)
   -- contract (including process shutdown) is unavailable.
   local okNet,Net=pcall(require,'src.mods.Net')
   local okLifecycle,Lifecycle=pcall(require,'src.core.SessionLifecycle')
+  local okThreads,threadApi=pcall(function()return love.thread end)
   if not okNet or not okLifecycle or type(Lifecycle.registerProcessShutdown)~='function'
-      or not (love.thread and love.thread.newThread and love.thread.newChannel) then
-    local reason='Gen2Recomped: KASC HD transport not installed; required host API unavailable'
+      or not okThreads or not (threadApi and threadApi.newThread and threadApi.newChannel) then
+    local reason='KASC HD worker extension inactive; the shared content transport owns downloads'
     if mod.log and mod.log.warn then mod.log:warn('%s',reason) end
     return {active=false,reason=reason,attach=function()end,close=function()end,
       export=function()return false end}

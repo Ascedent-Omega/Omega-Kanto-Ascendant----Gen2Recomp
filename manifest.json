@@ -319,7 +319,7 @@
   "entry": "entry.lua",
   "profile": "content",
   "affects_link": true,
-  "game_version": ">=0.8.45 <0.9.0",
+  "game_version": ">=0.3.96 <0.4.0 || >=0.8.45 <0.9.0",
   "games": [
     "gen1"
   ],
@@ -727,7 +727,7 @@
     }
   ],
   "experimental": false,
-  "description": "A living 251-Pokémon Kanto for Red, Blue and Yellow: early Johto migrations, mythical Mew/Celebi signals, Gorochu, ranked rematches, research habitats, shinies and Mega Evolution. Gen 1 release for Gen2Recomp.",
+  "description": "Kanto Ascendant: universal release candidate for Red, Blue and Yellow on Gen1Recomp and Gen2Recomp.",
   "github": "Ascedent-Omega/Omega-Kanto-Ascendant----Gen2Recomp",
   "generations": [
     1

@@ -1,46 +1,49 @@
-# Kanto Ascendant 6.7.35-rc.1
+# Kanto Ascendant 6.7.35-rc.1 — Universal RC
 
-## Engine-specific downloads
+**The same ZIP works with Gen1Recomp and Gen2Recomp.** Install this package alongside [Voxel Ascendant 3.0.65-rc.1](https://github.com/Ascedent-Omega/Voxel-Omega-Ascendant-----Gen2Recomp/releases/tag/v3.0.65-rc.1); update both mods together.
 
-This Gen2Recomp package is a release candidate fixing the missing optional download transport at startup. For Gen1Recomp, use the unchanged stable Kanto Ascendant 6.7.33 package from the original Ascendant repository. Gen1Recomp and Gen2Recomp need separate manifests and downloads. Both Gen2 packages must be updated together. Android hardware verification is pending.
+This release candidate supports **Pokémon Red, Blue and Yellow**. It contains the current shared Kanto runtime and the fix for `SpriteMirrorFetch:9: missing transport dependency`. Gold, Silver and Crystal stay inactive in this RC. For those games, retain the previous Gen1Recomp release.
 
+## Supported engines
 
-**A living, 251-Pokémon Kanto for Pokémon Red, Blue and Yellow, on Gen2Recomp.**
+| Engine | Version range | Download |
+| --- | --- | --- |
+| Gen1Recomp | 0.3.96 to below 0.4.0 | The Universal ZIP below |
+| Gen2Recomp / Gen2Recomped | 0.8.45 to below 0.9.0 | The identical Universal ZIP |
 
-Kanto Ascendant (KASC) expands the Gen 1 adventure: more Pokémon to find, wild Pokémon that roam the routes, ranked trainer rematches, research habitats, shinies, Mega Evolution and a full post-game, while the original story stays intact. It is a mod for the **Gen2Recomp** engine (Gen2Recomped 0.8.45 or newer in the 0.8 line) and is made to run together with **[Voxel Ascendant](https://github.com/Ascedent-Omega/Voxel-Omega-Ascendant-----Gen2Recomp)**, which draws it all in 3D.
+There are no separate Gen1/Gen2 builds and no launcher modification is needed. Cartridge generation and engine name are different things: Red, Blue and Yellow are Gen 1 games in either engine.
 
-> This release is for **Red, Blue and Yellow only**. On Gold, Silver and Crystal the mod stays switched off and says so in the log. Gen 2 support will come later as a separate release.
+## Installation
 
-## What's in it
+1. Close the game. Back up `mods/VOXEL_ASCENDANT`, `mods/kanto_ascendant` and your saves.
+2. Download **both Universal ZIP assets** from the two RC release pages. Do not use GitHub's automatic **Source code (zip)** or **Source code (tar.gz)** downloads.
+3. Remove the old `VOXEL_ASCENDANT` and `kanto_ascendant` folders from the active engine's `mods/` directory. Remove duplicate older copies of these two mods from any other active mod location.
+4. Extract both ZIPs into that `mods/` directory. The resulting files must include:
 
-- **251 Pokémon in Kanto.** Optional early Johto migrations, Gorochu, regional forms, and the mythical Mew and Celebi signals.
-- **Wilds of Kanto.** Wild Pokémon walk the overworld with their own habits, and research habitats show where each species lives.
-- **Trainers that come back.** Ranked rematches, a difficulty setting and a story level cap.
-- **Mega Evolution.** The Mega Ring, Mega Stones and the Route 5 Evolution Machine, with animated Mega sprites.
-- **Shinies, gifts and the bank.** Shiny Pokémon, gift codes, expanded PC storage and the Legacy Bank.
-- **The ASCENDANT menu.** One start-menu hub for every option, in English and German.
+```text
+mods/
+  VOXEL_ASCENDANT/
+    manifest.json
+    main.lua
+  kanto_ascendant/
+    manifest.json
+    entry.lua
+```
 
-## New in 6.7.35-rc.1
+5. Keep existing saves, options and `mod_cache`. Enable both mods and start Red, Blue or Yellow. If you have both engines installed, install these **same two ZIPs** into each engine's own mod directory.
 
-- **Gen2Recomp support.** Runs on Gen2Recomped 0.8.45. Parts of the battle and text code that this engine lays out differently are now optional, so a missing engine module switches one detail off instead of stopping the mod.
-- **Gen 1 only.** The Gold/Silver/Crystal entry (Gen 2 menus, Gen 2 Mega bridge, Johto wardrobe and Gen 2 trainer progress) is not part of this package.
-- **Faster start.** The gift catalogue and gift profiles load only when they are first needed, and shared data tables are read once instead of several times.
-- **Mega Evolution.** New Mega sprite sets, including animated Megas.
-- **Menus.** Shorter, clearer ASCENDANT menu labels.
+## Installation auf Deutsch
 
-## Install
+Spiel schliessen und beide bisherigen Modordner sowie Spielstaende sichern. Die **zwei Universal-ZIPs** von den RC-Releaseseiten laden, die alten Modordner aus dem aktiven `mods/`-Verzeichnis entfernen und beide ZIPs direkt dort entpacken. Keine zusaetzliche Ordnerebene anlegen. Spielstaende, Optionen und `mod_cache` behalten. Beide Mods aktivieren und Rot, Blau oder Gelb starten. Fuer beide Recomps gelten dieselben ZIPs; nur der Installationsordner ist jeweils der andere.
 
-1. Install **Gen2Recomp** (Gen2Recomped 0.8.45) and import your own Red, Blue or Yellow cartridge in its launcher.
-2. Close the game. If you already have Kanto Ascendant, keep a copy of your `mods/kanto_ascendant` folder.
-3. Download `Kanto-Ascendant-6.7.35-rc.1.zip` from the [release page](../../releases), delete the old `mods/kanto_ascendant` folder and unzip the new one into `mods/`. You should end up with `mods/kanto_ascendant/entry.lua`.
-4. Install **Voxel Ascendant 3.0.64** the same way. Update both mods together.
-5. Start the game. Your saves and settings are kept.
+## RC status and limitations
 
-## Known limitations
-
-- Tested on Windows PC with Pokémon Yellow. **Android has not been tested on a real phone yet.**
-- In-game HD downloads are switched off on Gen2Recomp: the engine does not offer the download feature they need yet.
-- A save that was carried over from another engine can log a "Legacy archive" message. Your save still loads and plays; only the Legacy Bank history from the old engine is not linked.
+- Native loader checks use the exact Gen1Recomp 0.3.96 and Gen2Recomped 0.8.45 releases under macOS. Automated tests also cover the missing transport and Windows binary-download fallback.
+- No full playthrough and no physical Android/iOS test has been completed for this RC.
+- Gen2Recomp does not expose the optional mod download transport. In-game sprite downloads stay unavailable; bundled graphics remain usable.
+- Gen1Recomp keeps its native transport. On Windows without mod-thread permission, binary content uses the engine-owned file-download pool. Windows **portable mode** cannot safely share that pool's native staging root, so optional downloads are unavailable there in this RC.
+- Optional geometry/image/light-cache workers use their existing fallback when a host does not expose worker access. The manifest retains mod API 2 and declares only permissions understood by both engines.
+- To roll back, close the game and restore the two previous mod folders. Restore your backed-up saves as well if you want to return to their exact earlier state.
 
 ## Credits
 
