@@ -1,4 +1,4 @@
-# Kanto Ascendant 6.7.34
+# Kanto Ascendant 6.7.35
 
 **A living, 251-Pokémon Kanto for Pokémon Red, Blue and Yellow, on Gen2Recomp.**
 
@@ -15,8 +15,9 @@ Kanto Ascendant (KASC) expands the Gen 1 adventure: more Pokémon to find, wild 
 - **Shinies, gifts and the bank.** Shiny Pokémon, gift codes, expanded PC storage and the Legacy Bank.
 - **The ASCENDANT menu.** One start-menu hub for every option, in English and German.
 
-## New in 6.7.34
+## New in 6.7.35
 
+- **Fix: "SpriteMirrorFetch: missing transport dependency".** On Gen2Recomp the mod could fail to load (reported on Android and PC) because the engine has no download feature for mods. The download screens now report "network unavailable" instead, and the mod loads normally.
 - **Gen2Recomp support.** Runs on Gen2Recomped 0.8.45. Parts of the battle and text code that this engine lays out differently are now optional, so a missing engine module switches one detail off instead of stopping the mod.
 - **Gen 1 only.** The Gold/Silver/Crystal entry (Gen 2 menus, Gen 2 Mega bridge, Johto wardrobe and Gen 2 trainer progress) is not part of this package.
 - **Faster start.** The gift catalogue and gift profiles load only when they are first needed, and shared data tables are read once instead of several times.
@@ -27,8 +28,8 @@ Kanto Ascendant (KASC) expands the Gen 1 adventure: more Pokémon to find, wild 
 
 1. Install **Gen2Recomp** (Gen2Recomped 0.8.45) and import your own Red, Blue or Yellow cartridge in its launcher.
 2. Close the game. If you already have Kanto Ascendant, keep a copy of your `mods/kanto_ascendant` folder.
-3. Download `Kanto-Ascendant-6.7.34.zip` from the [release page](../../releases), delete the old `mods/kanto_ascendant` folder and unzip the new one into `mods/`. You should end up with `mods/kanto_ascendant/entry.lua`.
-4. Install **Voxel Ascendant 3.0.64** the same way. Update both mods together.
+3. Download `Kanto-Ascendant-6.7.35.zip` from the [release page](../../releases), delete the old `mods/kanto_ascendant` folder and unzip the new one into `mods/`. You should end up with `mods/kanto_ascendant/entry.lua`.
+4. Install **Voxel Ascendant 3.0.65** the same way. Update both mods together.
 5. Start the game. Your saves and settings are kept.
 
 ## Known limitations
