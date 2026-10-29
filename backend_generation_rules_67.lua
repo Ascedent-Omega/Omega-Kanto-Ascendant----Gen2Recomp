@@ -20,6 +20,61 @@ return function(opts)
       rollbackReceiptId='docs/NEW_RC_CARD_MATRIX_20260907.md#rollback-regelautorität'})
   end
   local cache={}
+  -- Keep historical rows as privately owned scalar byte records and group
+  -- row IDs. This avoids retaining millions of Lua table references for
+  -- every GC traversal. Public rows are fresh tables with exact values;
+  -- unsupported formats retain the ordinary recursive-copy path.
+  local sourceRows,sourceValues={},{}
+  local packedGroup={}
+  local function u32(n)
+    if n<0 then n=n+4294967296 end
+    local a=n%256;n=math.floor(n/256)
+    local b=n%256;n=math.floor(n/256)
+    local c=n%256;return string.char(a,b,c,math.floor(n/256))
+  end
+  local function read32(s,i,signed)
+    local a,b,c,d=s:byte(i,i+3);local n=a+b*256+c*65536+d*16777216
+    if signed and n>=2147483648 then return n-4294967296 end
+    return n
+  end
+  local function int32(n)
+    return type(n)=='number'and n%1==0 and n>= -2147483648 and n<=2147483647
+      and not(n==0 and 1/n<0)
+  end
+  local function rowKey(row)
+    if type(row)~='table'or getmetatable(row)~=nil or type(row[3])~='string'
+        or not int32(row[1])or not int32(row[2])or not int32(row[4])then return end
+    local count=0
+    for k in pairs(row)do if k~=1 and k~=2 and k~=3 and k~=4 then return end;count=count+1 end
+    if count~=4 then return end
+    return u32(row[1])..u32(row[2])..u32(row[4])..row[3]
+  end
+  local function encodeGroup(rows)
+    if type(rows)~='table'or getmetatable(rows)~=nil then return rows end
+    local n,count=#rows,0
+    for k in pairs(rows)do
+      if type(k)~='number'or k%1~=0 or k<1 or k>n then return rows end
+      count=count+1
+    end
+    if count~=n then return rows end
+    local codes,fallback={},nil
+    for i=1,n do
+      local key=rowKey(rows[i]);local id=key and sourceRows[key]
+      if key and not id and #sourceValues<4294967295 then
+        id=#sourceValues+1;sourceValues[id]=key;sourceRows[key]=id
+      end
+      if not id then
+        id=0;fallback=fallback or{};fallback[i]=rows[i]
+      end
+      codes[i]=u32(id)
+    end
+    return setmetatable({bytes=table.concat(codes),fallback=fallback},packedGroup)
+  end
+  local function internSource(value)
+    if type(value)~='table'or getmetatable(value)~=nil then return value end
+    local out={};for version,rows in pairs(value)do out[version]=encodeGroup(rows)end
+    return out
+  end
   -- Main-series battle-era baselines. In particular LGPE/Legends/Champions
   -- must not silently replace the USUM/SwSh/SV rule era just by sorting last.
   local defaults=opts.defaultVersionGroups or {[1]=2,[2]=4,[3]=6,[4]=9,
@@ -27,6 +82,19 @@ return function(opts)
   local function copy(v)
     if type(v)~='table' then return v end
     local r={};for k,x in pairs(v)do r[k]=copy(x)end;return r
+  end
+  local function copyLearnsetRows(group)
+    if type(group)~='table'or getmetatable(group)~=packedGroup then return copy(group)end
+    local out={};local bytes=group.bytes
+    for offset=1,#bytes,4 do
+      local id=read32(bytes,offset,false);local i=(offset+3)/4
+      if id==0 then out[i]=copy(group.fallback[i])
+      else
+        local row=sourceValues[id]
+        out[i]={read32(row,1,true),read32(row,5,true),row:sub(13),read32(row,9,true)}
+      end
+    end
+    return out
   end
   local function get(t,k)return t and (t[tostring(k)] or t[k])end
   local function entry(key)
@@ -43,7 +111,7 @@ return function(opts)
     if not cache[pid] then
       local path=get(data.learnsetPaths,pid)
       if not path then return nil end
-      cache[pid]=assert(load(path),'missing learnset '..tostring(pid))
+      cache[pid]=internSource(assert(load(path),'missing learnset '..tostring(pid)))
     end
     return cache[pid],pid
   end
@@ -107,7 +175,7 @@ return function(opts)
     end
     if not chosen then return nil,'no_source_for_generation' end
     return {key=row.key,pokeapiId=pid,inherited=pid~=row.pokeapiId,
-      generation=epoch,versionGroup=chosen,rows=copy(get(byVersion,chosen))}
+      generation=epoch,versionGroup=chosen,rows=copyLearnsetRows(get(byVersion,chosen))}
   end
   -- Enumerate legal historical sources for this exact identity, never a
   -- national-Dex union that could leak another regional form's moves.
